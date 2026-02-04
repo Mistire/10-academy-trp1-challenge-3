@@ -1,0 +1,23 @@
+[project]
+name = "chimera"
+version = "0.1.0"
+description = "Project Chimera - Autonomous Influencer Network"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+  "mcp-sdk>=0.1.0", # replace with actual package name when available
+  "weaviate-client>=4.0.0",
+  "redis>=4.5.0",
+  "uvicorn>=0.23.0",
+  "python-dotenv>=1.0.0"
+]
+
+[project.optional-dependencies]
+test = [
+  "pytest>=7.0",
+  "pytest-asyncio>=0.22",
+]
+
+[build-system]
+requires = ["setuptools>=61", "wheel", "build"]
+build-backend = "setuptools.build_meta"
