@@ -1,24 +1,28 @@
-# Task 1.2: Domain Architecture Strategy
+# Project Chimera Architecture Strategy
 
-**Objective:** Define the architecture guiding Project Chimera to ensure scalability, safety, and maintainability. This document is a developer- and stakeholder-facing blueprint.
-
-**Estimated effort:** 3 hours (scoping, diagrams, and actionable recommendations)
+**Objective:** Define the architecture guiding Project Chimera to ensure scalability, safety, and maintainability. This document serves as a blueprint for developers and stakeholders.
 
 ---
 
 ## 1. Agent Pattern
 
-### Recommendation: Hierarchical Swarm (Planner → Worker → Judge)
+### Recommended Pattern: Hierarchical Swarm (Planner → Worker → Judge)
 
-Why this fits Chimera:
+**Rationale:**
 
-- High parallelism: Workers are stateless and scale horizontally to handle bursts (replies, media generation, trend detection).
-- Fault tolerance & isolation: Worker failures are contained; Judges act as gates preventing faulty outputs from committing.
-- Quality control: Judges provide an automated validation layer (confidence scoring, safety filters) before state changes.
-- Dynamic decomposition & self-healing: Planners re-plan on failure and spawn re-tries or sub-planners for complex tasks.
-- Matches SRS patterns (FastRender, Planner/Worker/Judge) and supports economic & identity primitives (Agentic Commerce, SOUL.md).
+The hierarchical swarm pattern is selected over alternatives like the **Sequential Chain** because it allows **high parallelism**, **fault isolation**, and **dynamic task decomposition**, which are critical for Chimera’s multi-task AI agents.
 
-Mermaid diagram (Swarm coordination):
+**Advantages over Sequential Chain:**
+
+| Feature                    | Hierarchical Swarm                                       | Sequential Chain                  |
+| -------------------------- | -------------------------------------------------------- | --------------------------------- |
+| Parallelism                | High (multiple Workers run simultaneously)               | Low (tasks run one after another) |
+| Fault tolerance            | Worker failures are isolated; Judges prevent propagation | Any failure halts the chain       |
+| Quality control            | Judges act as validation and safety gate                 | Minimal automated validation      |
+| Scalability                | Horizontal scaling possible                              | Limited by sequential dependency  |
+| Dynamic task decomposition | Planners can spawn sub-planners and retries              | Not easily decomposable           |
+
+**Mermaid Diagram: Swarm Coordination**
 
 ```mermaid
 flowchart TD
@@ -36,19 +40,30 @@ flowchart TD
 
 ### Placement & Decision Logic
 
-- Judges are the primary HITL gate: they route outputs based on confidence and sensitivity.
-- Decision thresholds (configurable):
-  - Low confidence: < 0.70 → **Reject / Retry** automatically (or escalate depending on policy)
-  - Medium confidence: 0.70–0.90 → **Queue for HITL** (async approval)
-  - High confidence: > 0.90 → **Auto-Approve** (subject to sensitive topic override)
-- Sensitive-topic override: any content matching regulated/sensitive categories (politics, legal, health, financial advice) forces HITL regardless of confidence.
+HITL is integrated at the Judge level to handle **uncertain or sensitive outputs**. This ensures AI decisions meet safety and policy standards before committing to global state.
 
-Mermaid diagram (HITL integration):
+**Decision thresholds:**
+
+* **Low confidence (<0.70):** Automatically reject or retry.
+* **Medium confidence (0.70–0.90):** Queue for human review.
+* **High confidence (>0.90):** Auto-approve, unless sensitive.
+
+**Sensitive-topic override:** Any regulated content (politics, legal, health, finance) triggers mandatory HITL review.
+
+**Advantages over fully automated pipelines:**
+
+| Feature     | HITL Layer                            | Fully Automated Pipeline             |
+| ----------- | ------------------------------------- | ------------------------------------ |
+| Safety      | Human review prevents risky content   | Only algorithmic checks, higher risk |
+| Compliance  | Mandatory review for sensitive topics | May violate regulations              |
+| Flexibility | Configurable thresholds per campaign  | Fixed automation                     |
+
+**Mermaid Diagram: HITL Integration**
 
 ```mermaid
 flowchart TD
     Worker --> Judge
-    Judge -->|High Confidence (>0.9) & Not Sensitive| GlobalState
+    Judge -->|High Confidence (>0.9) & Not Sensitive| GlobalState["Global Campaign State"]
     Judge -->|Medium Confidence (0.7-0.9) OR Sensitive| HITL["Human-in-the-Loop Reviewer"]
     HITL -->|Approved| GlobalState
     HITL -->|Rejected| Planner
@@ -58,16 +73,17 @@ flowchart TD
 
 ## 3. Database Strategy: Hybrid (SQL + NoSQL + Vector DB)
 
-### Rationale & Roles
+**Rationale:**
 
-- **PostgreSQL (SQL):** canonical store for campaign metadata, account management, access control lists, and critical transactional business records (ACID guarantees).
-  - Use for: user accounts, campaign configs, audit metadata, policy versions.
-- **NoSQL (e.g., MongoDB, DynamoDB):** high-velocity video/image metadata and denormalized query access (fast writes and flexible schema).
-  - Use for: streaming writes of content metadata, thumbnails, upload statuses, processing pipelines.
-- **Vector DB (Weaviate / Pinecone):** semantic memories, embeddings, RAG retrievals for persona/history search.
-  - Use for: long-term memory, similarity search, persona recall.
+Chimera requires storing **high-velocity metadata**, **transactional campaign data**, and **semantic embeddings**. A hybrid approach balances performance, consistency, and flexibility.
 
-Mermaid diagram (Data flow):
+| DB Type                       | Role                                | Why chosen over counterpart                              |
+| ----------------------------- | ----------------------------------- | -------------------------------------------------------- |
+| PostgreSQL (SQL)              | Campaign metadata, ACLs, audit logs | Better ACID guarantees than NoSQL for transactional data |
+| NoSQL (MongoDB/DynamoDB)      | High-velocity video/image metadata  | Faster writes and flexible schema vs SQL                 |
+| Vector DB (Weaviate/Pinecone) | Semantic memory, embeddings         | Specialized similarity search vs SQL/NoSQL               |
+
+**Mermaid Diagram: Data Flow**
 
 ```mermaid
 flowchart TD
@@ -79,37 +95,36 @@ flowchart TD
     CDN["CDN"] <-- S3
 ```
 
-Design considerations:
+**Additional considerations:**
 
-- Use write-through cache (Redis) for hot items (recent posts, short-term episodic memory) to meet 10-second interaction SLAs.
-- Partition/Shard NoSQL collections by tenant and time-window for efficient retention policies.
-- Keep long-term audit logs in append-only storage (immutable store / ledger) for compliance.
+* **Caching:** Redis for hot items and short-term memory.
+* **Sharding:** Partition NoSQL collections by tenant/time for performance.
+* **Audit logs:** Immutable append-only storage for compliance.
 
 ---
 
-## 4. Operational & Safety Concerns (scalability, failover, logging)
+## 4. Operational & Safety Considerations
 
 ### Autoscaling & Resilience
 
-- Run Workers as stateless containers on K8s (Horizontal Pod Autoscaler based on queue length / CPU / custom metrics).
-- Keep Orchestrator & Planner horizontally scalable and largely stateless; use leader-election for single-active planner per campaign if needed.
-- Vector DB and PostgreSQL should be deployed in clustered, managed modes (replication, read replicas). Use connection pooling for DB clients.
+* Workers are **stateless containers** on Kubernetes with HPA (queue length/CPU metrics).
+* Planners and orchestrators are horizontally scalable, leader election ensures a single active planner per campaign.
+* Vector DB and PostgreSQL run in **clustered, managed deployments** with replication and read replicas.
 
 ### Failover
 
-- Task queue (Redis/Stream) with persistence and durable consumer groups.
-- Circuit breakers on external MCP Tools to prevent cascading failures (rate-limit/backoff patterns).
-- Graceful degradation: revert to reduced functionality (read-only, no media generation) under resource constraints.
+* Persistent task queues (Redis/Streams) with durable consumer groups.
+* Circuit breakers to prevent cascading failures from external tools.
+* Graceful degradation: read-only or limited functionality under resource constraints.
 
 ### Observability & Auditing
 
-- Structured logs (JSON) + centralized aggregator (ELK/Opensearch).
-- Metrics & tracing: Prometheus + Grafana + distributed tracing (Jaeger / OpenTelemetry).
-- Security/Audit trails: Signed action logs, immutable transaction ledger (on-chain for payments), and encrypted audit exports.
+* Structured logs (JSON) with centralized aggregation (ELK / OpenSearch).
+* Metrics and tracing via Prometheus + Grafana + distributed tracing (Jaeger / OpenTelemetry).
+* Security & audit: signed action logs, immutable ledgers, encrypted audit exports.
 
 ### Security
 
-- Agent identity: signed agent IDs, public-key infrastructure (PKI), and key material stored in Vault.
-- Policy enforcement at multiple layers: Judge (runtime), MCP Server (edge enforcement), and BoardKit (global policy updates via GitOps).
+* Agent identity via signed IDs and PKI; keys stored in Vault.
+* Policy enforcement at multiple layers: Judge (runtime), MCP Server (edge), BoardKit (global policy updates via GitOps).
 
----
