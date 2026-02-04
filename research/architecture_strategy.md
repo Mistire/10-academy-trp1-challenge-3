@@ -60,13 +60,13 @@ HITL is integrated at the Judge level to handle **uncertain or sensitive outputs
 
 **Mermaid Diagram: HITL Integration**
 
-```mermaid
+``` mermaid
 flowchart TD
-    Worker --> Judge
-    Judge -->|High Confidence (>0.9) & Not Sensitive| GlobalState["Global Campaign State"]
-    Judge -->|Medium Confidence (0.7-0.9) OR Sensitive| HITL["Human-in-the-Loop Reviewer"]
-    HITL -->|Approved| GlobalState
-    HITL -->|Rejected| Planner
+    W["Worker (Executor)"] --> J["Judge (Validation, Safety)"]
+    J -->|"High Confidence (>0.9) & Not Sensitive"| GS["Global Campaign State"]
+    J -->|"Medium Confidence (0.7-0.9) OR Sensitive"| H["Human-in-the-Loop Reviewer"]
+    H -->|Approved| GS
+    H -->|Rejected| P["Planner (Retry / Re-plan)"]
 ```
 
 ---
@@ -87,12 +87,12 @@ Chimera requires storing **high-velocity metadata**, **transactional campaign da
 
 ```mermaid
 flowchart TD
-    Worker -->|Generates Content + Metadata| NoSQL["NoSQL DB (Video/Image Metadata)"]
-    Worker -->|Stores Media| S3["Object Storage (S3)"]
-    Planner -->|Reads Goals| SQL["PostgreSQL (Campaign Metadata)"]
-    Judge -->|Writes Validated Outputs & Embeddings| NoSQL
-    Judge -->|Indexes Embeddings| VectorDB["Weaviate / Vector DB"]
-    CDN["CDN"] <-- S3
+    W["Worker (Executor)"] -->|Generates Content + Metadata| NS["NoSQL DB (Video/Image Metadata)"]
+    W -->|Stores Media| S3["Object Storage (S3)"]
+    P["Planner (Reads Goals)"] --> SQL["PostgreSQL (Campaign Metadata)"]
+    J["Judge (Validation, Safety)"] -->|Writes Validated Outputs & Embeddings| NS
+    J -->|Indexes Embeddings| VDB["Vector DB (Weaviate / Pinecone)"]
+    S3 --> CDN["CDN"]
 ```
 
 **Additional considerations:**
