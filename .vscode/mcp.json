@@ -5,9 +5,9 @@
 			"type": "http",
 			"headers": {
 				"X-Device": "linux",
-				"X-Coding-Tool": "vscode"
+				"X-Coding-Tool": "antigravity"
 			}
-		},
+		}
 	},
 	"inputs": []
 }
