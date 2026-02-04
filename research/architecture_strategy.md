@@ -86,10 +86,10 @@ Chimera requires storing **high-velocity metadata**, **transactional campaign da
 **Mermaid Diagram: Data Flow**
 
 ```mermaid
-flowchart TD
+flowchart LR
+    P["Planner (Reads Goals)"] --> SQL["PostgreSQL (Campaign Metadata)"]
     W["Worker (Executor)"] -->|Generates Content + Metadata| NS["NoSQL DB (Video/Image Metadata)"]
     W -->|Stores Media| S3["Object Storage (S3)"]
-    P["Planner (Reads Goals)"] --> SQL["PostgreSQL (Campaign Metadata)"]
     J["Judge (Validation, Safety)"] -->|Writes Validated Outputs & Embeddings| NS
     J -->|Indexes Embeddings| VDB["Vector DB (Weaviate / Pinecone)"]
     S3 --> CDN["CDN"]
