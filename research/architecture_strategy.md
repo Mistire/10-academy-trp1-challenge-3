@@ -6,7 +6,7 @@
 
 ---
 
-## 1. Agent Pattern 
+## 1. Agent Pattern
 
 ### Recommendation: Hierarchical Swarm (Planner → Worker → Judge)
 
@@ -80,6 +80,7 @@ flowchart TD
 ```
 
 Design considerations:
+
 - Use write-through cache (Redis) for hot items (recent posts, short-term episodic memory) to meet 10-second interaction SLAs.
 - Partition/Shard NoSQL collections by tenant and time-window for efficient retention policies.
 - Keep long-term audit logs in append-only storage (immutable store / ledger) for compliance.
@@ -89,21 +90,25 @@ Design considerations:
 ## 4. Operational & Safety Concerns (scalability, failover, logging)
 
 ### Autoscaling & Resilience
+
 - Run Workers as stateless containers on K8s (Horizontal Pod Autoscaler based on queue length / CPU / custom metrics).
 - Keep Orchestrator & Planner horizontally scalable and largely stateless; use leader-election for single-active planner per campaign if needed.
 - Vector DB and PostgreSQL should be deployed in clustered, managed modes (replication, read replicas). Use connection pooling for DB clients.
 
 ### Failover
+
 - Task queue (Redis/Stream) with persistence and durable consumer groups.
 - Circuit breakers on external MCP Tools to prevent cascading failures (rate-limit/backoff patterns).
 - Graceful degradation: revert to reduced functionality (read-only, no media generation) under resource constraints.
 
 ### Observability & Auditing
+
 - Structured logs (JSON) + centralized aggregator (ELK/Opensearch).
 - Metrics & tracing: Prometheus + Grafana + distributed tracing (Jaeger / OpenTelemetry).
 - Security/Audit trails: Signed action logs, immutable transaction ledger (on-chain for payments), and encrypted audit exports.
 
 ### Security
+
 - Agent identity: signed agent IDs, public-key infrastructure (PKI), and key material stored in Vault.
 - Policy enforcement at multiple layers: Judge (runtime), MCP Server (edge enforcement), and BoardKit (global policy updates via GitOps).
 
