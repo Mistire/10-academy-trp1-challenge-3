@@ -4,6 +4,7 @@ from typing import Dict, Any
 # This test is designed to FAIL because the skill implementations are missing.
 # It asserts that the skill interface validates parameters as per specs/technical.md.
 
+@pytest.mark.xfail(reason="TDD Empty Slot - Implementation Pending")
 def test_skills_parameter_validation():
     """
     Asserts that skills validation logic rejects malformed inputs.
@@ -22,6 +23,7 @@ def test_skills_parameter_validation():
     with pytest.raises(ValueError):
         monitor_finance({"check_type": "invalid_type"})
 
+@pytest.mark.xfail(reason="TDD Empty Slot - Implementation Pending")
 def test_multimodal_generation_contract():
     """
     Asserts that generate_multimodal returns the correct asset structure.

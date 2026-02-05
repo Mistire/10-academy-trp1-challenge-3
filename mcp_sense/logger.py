@@ -1,7 +1,7 @@
 import json
 import logging
 import os
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import Optional, Dict
 
 DEFAULT_LOG_DIR = "logs"
@@ -47,7 +47,8 @@ def setup_logger(log_dir: Optional[str] = None, log_file: Optional[str] = None) 
 
 
 def _now_iso() -> str:
-    return datetime.utcnow().isoformat() + "Z"
+    """Get current timestamp in ISO format with UTC Z suffix."""
+    return datetime.now(timezone.utc).isoformat().replace('+00:00', 'Z')
 
 
 def on_mcp_handshake_success(

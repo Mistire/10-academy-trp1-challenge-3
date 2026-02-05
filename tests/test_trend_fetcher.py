@@ -5,6 +5,7 @@ from typing import Dict, Any
 # This test is designed to FAIL because the implementation does not exist yet.
 # It defines the "Golden" contract for the Trend Fetcher skill.
 
+@pytest.mark.xfail(reason="TDD Empty Slot - Implementation Pending")
 def test_trend_fetcher_contract():
     """
     Asserts that the trend data structure matches the API contract defined in specs/technical.md.
