@@ -1,0 +1,48 @@
+Metadata-Version: 2.4
+Name: chimera
+Version: 0.1.0
+Summary: Project Chimera - Autonomous Influencer Network
+Requires-Python: >=3.11
+Description-Content-Type: text/markdown
+Requires-Dist: weaviate-client>=4.0.0
+Requires-Dist: redis>=4.5.0
+Requires-Dist: uvicorn>=0.23.0
+Requires-Dist: python-dotenv>=1.0.0
+Provides-Extra: test
+Requires-Dist: pytest>=7.0; extra == "test"
+Requires-Dist: pytest-asyncio>=0.22; extra == "test"
+
+# 10Academy Challenge 3 - MCP, Research, and Reporting
+
+This repository contains the implementation of MCP integration, structured research, and reporting for 10Academy Challenge 3.
+
+## Components
+
+### 1. Model Context Protocol (MCP) Integration
+Uses MCP to establish connections with analytics and feedback servers. Configuration can be found in `.vscode/mcp.json`.
+
+### 2. MCP Sense
+A structured logging utility situated in `mcp_sense/` for auditing "confirmed" MCP connection handshakes.
+- **Verification**: Run `PYTHONPATH=. python3 scripts/mcp_handshake_demo.py` to simulate a handshake and view logs in `logs/mcp-sense-connections.log`.
+
+### 3. Research
+The `research/` directory contains systematic investigation and data gathering related to influencer analytics and feedback mechanisms.
+
+### 4. Reporting
+The `report/` directory holds the generated findings and analytics reports derived from the research and MCP data.
+
+## Getting Started
+
+### Installation
+```bash
+python3 -m venv venv
+source venv/bin/activate
+pip install -e .
+```
+
+### Running Tests
+Ensure `pytest` and `pytest-asyncio` are installed:
+```bash
+python3 -m pip install pytest pytest-asyncio
+PYTHONPATH=. pytest
+```

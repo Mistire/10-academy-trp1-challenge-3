@@ -80,7 +80,7 @@ Chimera requires storing **high-velocity metadata**, **transactional campaign da
 | DB Type                       | Role                                | Why chosen over counterpart                              |
 | ----------------------------- | ----------------------------------- | -------------------------------------------------------- |
 | PostgreSQL (SQL)              | Campaign metadata, ACLs, audit logs | Better ACID guarantees than NoSQL for transactional data |
-| NoSQL (MongoDB/DynamoDB)      | High-velocity video/image metadata  | Faster writes and flexible schema vs SQL                 |
+| PostgreSQL (JSONB)            | High-velocity video/image metadata  | Schema flexibility with ACID safety via JSONB indexing   |
 | Vector DB (Weaviate/Pinecone) | Semantic memory, embeddings         | Specialized similarity search vs SQL/NoSQL               |
 
 **Mermaid Diagram: Data Flow**
@@ -88,9 +88,9 @@ Chimera requires storing **high-velocity metadata**, **transactional campaign da
 ```mermaid
 flowchart LR
     P["Planner (Reads Goals)"] --> SQL["PostgreSQL (Campaign Metadata)"]
-    W["Worker (Executor)"] -->|Generates Content + Metadata| NS["NoSQL DB (Video/Image Metadata)"]
+    W["Worker (Executor)"] -->|Generates Content + Metadata| JB["PostgreSQL (JSONB Metadata)"]
     W -->|Stores Media| S3["Object Storage (S3)"]
-    J["Judge (Validation, Safety)"] -->|Writes Validated Outputs & Embeddings| NS
+    J["Judge (Validation, Safety)"] -->|Writes Validated Outputs & Embeddings| JB
     J -->|Indexes Embeddings| VDB["Vector DB (Weaviate / Pinecone)"]
     S3 --> CDN["CDN"]
 ```

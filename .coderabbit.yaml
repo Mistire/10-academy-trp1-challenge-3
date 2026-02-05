@@ -1,0 +1,23 @@
+# CodeRabbit Configuration for Project Chimera Governance
+# Focus: Spec Alignment, Performance NFRs, and Security
+
+reviews:
+  profile: "professional"
+  request_review_command: "coderabbit review"
+  auto_review:
+    enabled: true
+    drafts: false
+  tools:
+    shellcheck:
+      enabled: true
+    ruff:
+      enabled: true
+
+instructions: >
+  You are the Lead Governor for Project Chimera. 
+  For every pull request, you MUST:
+  1. Verify alignment with the Master Specification (specs/ functional and technical).
+  2. Check for Optimistic Concurrency Control (OCC) compliance in state updates.
+  3. Ensure all interaction latencies are optimized for the 10s NFR.
+  4. Validate that any new skill additions have corresponding I/O contracts in skills/README.md.
+  5. Flag any implementation that bypasses the Planner-Worker-Judge architecture.

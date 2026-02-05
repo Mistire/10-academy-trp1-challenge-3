@@ -1,0 +1,13 @@
+README.md
+pyproject.toml
+./mcp_sense/__init__.py
+./mcp_sense/logger.py
+chimera.egg-info/PKG-INFO
+chimera.egg-info/SOURCES.txt
+chimera.egg-info/dependency_links.txt
+chimera.egg-info/requires.txt
+chimera.egg-info/top_level.txt
+tests/test_emit_handshakes_from_mcp_config.py
+tests/test_mcp_sense.py
+tests/test_skills_interface.py
+tests/test_trend_fetcher.py

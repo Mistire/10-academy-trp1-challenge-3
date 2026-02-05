@@ -8,6 +8,35 @@ Project Chimera utilizes a hierarchical, role-based swarm architecture:
 - **Worker Node**: Stateless execution via MCP Tools.
 - **Judge Node**: QA + Safety + Optimistic Concurrency Control (OCC).
 
+### 1.2 System Entity Relationship Diagram (ERD)
+```mermaid
+erDiagram
+    CAMPAIGNS ||--o{ AGENTS : "manages"
+    AGENTS ||--o{ AUDIT_LOGS : "logs"
+    AGENTS ||--o{ MEDIA_ASSETS : "generates"
+    AGENTS ||--o{ AGENT_MEMORY : "recalls"
+    
+    CAMPAIGNS {
+        uuid id
+        string goal_text
+        decimal budget_limit
+    }
+    AGENTS {
+        uuid id
+        string persona_id
+        string wallet_address
+        string current_state
+    }
+    MEDIA_ASSETS {
+        uuid id
+        string media_type
+        text s3_url
+        string validation_status
+        float confidence_score
+        jsonb metadata
+    }
+```
+
 ## 2. Database Schemas
 
 ### 2.1 Relation DB (PostgreSQL) - "The Ledger"
@@ -50,6 +79,8 @@ CREATE TABLE media_assets (
     task_id UUID, -- Links to the generation task
     media_type VARCHAR(10), -- 'image', 'video'
     s3_url TEXT NOT NULL,
+    validation_status VARCHAR(20) DEFAULT 'pending', -- 'pending', 'validated', 'rejected'
+    confidence_score FLOAT,
     metadata JSONB, -- Stores technical props: duration, bitrate, style_idx, seed
     engagement_stats JSONB DEFAULT '{}', -- view_count, likes, shares
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP

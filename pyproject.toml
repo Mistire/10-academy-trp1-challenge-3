@@ -5,7 +5,6 @@ description = "Project Chimera - Autonomous Influencer Network"
 readme = "README.md"
 requires-python = ">=3.11"
 dependencies = [
-  "mcp-sdk>=0.1.0", # replace with actual package name when available
   "weaviate-client>=4.0.0",
   "redis>=4.5.0",
   "uvicorn>=0.23.0",
@@ -21,3 +20,7 @@ test = [
 [build-system]
 requires = ["setuptools>=61", "wheel", "build"]
 build-backend = "setuptools.build_meta"
+
+[tool.setuptools]
+package-dir = {"" = "."}
+packages = ["mcp_sense", "skills"]
