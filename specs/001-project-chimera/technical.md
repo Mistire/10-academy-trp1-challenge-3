@@ -41,9 +41,42 @@ The system utilizes **Redis** for the task queue and **Weaviate** for semantic m
     - 0.7 - 0.9: Pause DAG, request human approval.
     - < 0.7: Reject, signal Planner to retry with "Retry Context."
 
-## 4. Multi-Tiered Memory
+## 4. Multi-Tiered Memory & Database Schema (ERD)
+
+Project Chimera uses a hybrid strategy for transactional safety, high-velocity metadata, and semantic retrieval.
+
+```mermaid
+erDiagram
+    CAMPAIGN ||--o{ TASK : contains
+    CAMPAIGN {
+        uuid id PK
+        string goal
+        string status
+        float budget_usdc
+    }
+    TASK ||--o{ ASSET : generates
+    TASK {
+        uuid id PK
+        string type
+        jsonb input_data
+        float cost_usdc
+    }
+    ASSET {
+        uuid id PK
+        string url
+        float confidence
+        uuid persona_id
+    }
+    MEMORY_EPISODIC ||--o{ MEMORY_SEMANTIC : archived_to
+    MEMORY_EPISODIC {
+        string key PK
+        jsonb turn_data
+    }
+```
+
 - **Episodic**: Last 50 turns stored in Redis `agent:[id]:episodic`.
 - **Semantic**: All turns archived in Weaviate. Context assembler retrieves 5 most relevant memories for every Planner call.
+- **OpenClaw Compliance**: Every agent interaction includes a machine-readable capability manifest (MCP) and signed identity.
 
 ## 5. Non-Custodial Wallet Strategy
 - **Provider**: Coinbase AgentKit (CdpEvmWalletProvider).
