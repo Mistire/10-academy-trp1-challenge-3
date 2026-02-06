@@ -36,25 +36,28 @@ Every internal "thought" and external "handshake" is captured. We use **Tenx MCP
 
 ---
 
-## Repository Structure
+### `specs/` - Feature-Based Specifications (GitHub Spec Kit)
+Each feature (e.g., `001-project-chimera`) contains a full specification suite:
+- **`_meta.md`**: Feature vision, constraints, and high-level goal.
+- **`functional.md`**: User scenarios (SDD) and behavioral requirements.
+- **`technical.md`**: Technical blueprints, swarm role assignments, and MCP contracts.
+- **`tasks.md`**: Actionable checklist for implementation.
 
-### `specs/` - The Master Specification
-- **`_meta.md`**: High-level vision, philosophical alignment, and constraints.
-- **`functional.md`**: Detailed user stories and agentic behaviors (e.g., Honesty Directives).
-- **`technical.md`**: The system's blueprint (PostgreSQL DDLs, Weaviate Class definitions, API Contracts).
-- **`openclaw_integration.md`**: Protocols for inter-agent networking.
+### `.specify/` - Framework Core
+- **`memory/constitution.md`**: The supreme governing principles (Fractal Orchestration, Agentic Commerce).
+- **`project.json`**: Project metadata for Spec Kit compliance.
 
 ### `SOUL.md` - The Persona DNA
-This file defines the immutable core of the Chimera Agent. It contains the **Backstory**, **Voice**, **Beliefs**, and **Hard Directives** that govern all generated content.
+Defines the immutable core of the Chimera Agent: **Backstory**, **Voice**, **Beliefs**, and **Hard Directives**.
 
 ### `skills/` - Agentic Capabilities
-Modular "Skills" are the runtime packages agents call. This directory defines the strict I/O contracts for capabilities like `skill_fetch_trends` and `skill_monitor_finance`.
+Modular "Skills" (runtime packages) with strict I/O contracts.
 
 ### `research/` - High-Level Strategy
-Contains the `architecture_strategy.md` (Swarm logic, hybrid DB strategy) and `tooling_strategy.md` (Developer MCP configurations).
+Architectural and tooling deep-dives.
 
-### `tests/` - The Safety Net
-Follows a **True TDD** approach. This folder contains failing tests that define the contract for features before they are implemented. Validates that the AI Swarm builds what was intended.
+### `tests/` - The Safety Net (TDD)
+Failing tests that define the contract for features before they are implemented.
 
 ### `.agent/` - Internal Governance
 Contains the `instructions.md` and "Prime Directives" for AI coding assistants, ensuring they follow the project's specifications natively.

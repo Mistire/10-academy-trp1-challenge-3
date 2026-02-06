@@ -26,13 +26,14 @@ You must always show the response at the end of your answer, Do not show respons
 
 ## 1. Project Context
 "This is Project Chimera, an autonomous influencer system."
-The system relies on Spec-Driven Development, MCP traceability, and a hierarchical swarm architecture (Planner -> Worker -> Judge).
+The system relies on Spec-Driven Development (SDD), MCP traceability, and a hierarchical swarm architecture (Planner -> Worker -> Judge).
 
 ## 2. The Prime Directive
 **NEVER generate code without checking the `specs/` directory first.**
 Ensure all implementations align with:
-- `specs/functional.md`: User stories and agent behaviors.
-- `specs/technical.md`: API/Tool contracts and Database DDLs.
+- `.specify/memory/constitution.md`: The supreme source of truth.
+- `specs/[FEATURE]/functional.md`: User scenarios and agent behaviors.
+- `specs/[FEATURE]/technical.md`: API/Tool contracts and Technical Blueprint.
 
 ## 3. Traceability
 **Explain your plan before writing code.**

@@ -24,6 +24,19 @@ logs/
 # Build
 dist/
 build/
+*.egg-info/
+
+# UV
+.uv/
+
+# Testing & Coverage
+.pytest_cache/
+.coverage
+htmlcov/
+coverage.xml
 
 # Others
 .mypy_cache/
+.DS_Store
+*.swp
+*.bak

@@ -41,12 +41,13 @@ flowchart TD
 ### Placement & Decision Logic
 
 HITL is integrated at the Judge level to handle **uncertain or sensitive outputs**. This ensures AI decisions meet safety and policy standards before committing to global state.
+- **Constraint**: All edits must be validated against `specs/[FEATURE]/technical.md` before being committed to the main branch.
 
 **Decision thresholds:**
 
 * **Low confidence (<0.70):** Automatically reject or retry.
 * **Medium confidence (0.70–0.90):** Queue for human review.
-* **High confidence (>0.90):** Auto-approve, unless sensitive.
+* **High confidence (>0.90):** Auto-approve, unless sensitive (e.g., Finance, Politics).
 
 **Sensitive-topic override:** Any regulated content (politics, legal, health, finance) triggers mandatory HITL review.
 

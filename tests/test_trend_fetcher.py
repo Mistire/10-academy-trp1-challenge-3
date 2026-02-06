@@ -9,7 +9,7 @@ from typing import Dict, Any
 def test_trend_fetcher_contract():
     """
     Asserts that the trend data structure matches the API contract defined in specs/technical.md.
-    Contract: {"trends": [{"tag": "string", "relevance": "float"}], "id": "uuid"}
+    Contract: {"trends": [{"cluster_id": "string", "velocity": "float", "summary": "string"}], "id": "uuid"}
     """
     # Mocking the missing skill/module
     try:
@@ -17,14 +17,15 @@ def test_trend_fetcher_contract():
     except ImportError:
         pytest.fail("Skill 'fetch_trends' not implemented. TDD baseline failed.")
 
-    sample_input = {"topic_domain": "fashion", "limit": 5}
+    sample_input = {"region": "global", "topic": "fashion", "lookback_hours": 24}
     response = fetch_trends(sample_input)
 
     assert "trends" in response
     assert isinstance(response["trends"], list)
     assert len(response["trends"]) > 0
-    assert "tag" in response["trends"][0]
-    assert "relevance" in response["trends"][0]
+    assert "cluster_id" in response["trends"][0]
+    assert "velocity" in response["trends"][0]
+    assert "summary" in response["trends"][0]
     assert "id" in response
     try:
         uuid.UUID(str(response["id"]))

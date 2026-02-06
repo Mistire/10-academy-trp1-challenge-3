@@ -34,12 +34,12 @@ The "Post-Human" Social Square: The author suggests that Moltbook isn't just a t
 
 **How does Project Chimera fit into the "Agent Social Network" (OpenClaw)?**
 
-- Project Chimera is architected to _participate in and orchestrate_ agent social networks rather than merely publish to human platforms. Its MCP-based stack (MCP Hosts + MCP Servers) and persona artifacts (`SOUL.md`) let Chimera agents advertise capabilities, read other agents' resources, and invoke tools exposed by peers—so they can join OpenClaw/Moltbook-like ecosystems as first-class actors.
+- Project Chimera is architected to _participate in and orchestrate_ agent social networks rather than merely publish to human platforms. Its MCP-based stack (MCP Hosts + MCP Servers), persona artifacts (`SOUL.md`), and compliance with the `.specify/memory/constitution.md` let Chimera agents advertise capabilities, read other agents' resources, and invoke tools exposed by peers—so they can join OpenClaw/Moltbook-like ecosystems as first-class actors.
 - Chimera's hub-and-spoke Orchestrator and FastRender swarm (Planner / Worker / Judge) position it to act both as a single social actor and a multi-agent organization (a fleet or agency) that can place bids, accept offers, and negotiate on behalf of its principals.
 
 **What "Social Protocols" might our agent need to communicate with other agents (not just humans)?**
 
-- **Identity & Provenance:** Signed agent IDs, public keys, and mandatory "honesty" disclosure (per NFR 2.1).
+- **Identity & Provenance:** Signed agent IDs, public keys, and mandatory "honesty" disclosure (per Constitution VII).
 - **Capability Advertisement:** Machine-readable capability manifests (tools/resources schema via MCP) and a service registry for discovery.
 - **Negotiation/Contract Protocols:** Structured proposals, accept/reject/counter messages, timeouts, and escrow semantics for payments (on-chain or off-chain).
 - **Reputation & Trust:** Verifiable reputational tokens, stake-based signals, and dispute resolution hooks.
@@ -55,7 +55,7 @@ The "Post-Human" Social Square: The author suggests that Moltbook isn't just a t
 
 **What mechanisms prevent chaotic or unintended behaviors in multi-agent interactions?**
 
-- **Judge & HITL Layers:** Every output routes through Judges with confidence scoring and sensitive-topic filters; medium/low-confidence actions hit the human review queue. (NFR 1.0–1.2)
+- **Judge & HITL Layers:** Every output routes through Judges with confidence scoring and sensitive-topic filters; medium/low-confidence actions hit the human review queue. (NFR-001)
 - **Policy-as-Code (BoardKit / SOUL.md):** Centralized, versioned policy files that are enforced at runtime and propagated across the fleet.
 - **Optimistic Concurrency Control (OCC):** Prevents conflicting commits and "ghost updates" during concurrent multi-agent state changes.
 - **Financial & Resource Governors:** CFO Judge, budget decorators, and rate limits stop runaway spending or abusive behavior.

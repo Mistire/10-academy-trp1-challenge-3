@@ -8,7 +8,8 @@ dependencies = [
   "weaviate-client>=4.0.0",
   "redis>=4.5.0",
   "uvicorn>=0.23.0",
-  "python-dotenv>=1.0.0"
+  "python-dotenv>=1.0.0",
+  "specify-cli @ git+https://github.com/github/spec-kit.git"
 ]
 
 [project.optional-dependencies]

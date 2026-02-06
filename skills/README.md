@@ -1,18 +1,65 @@
 # Project Chimera: Agent Skills (Runtime)
 
-This directory defines the modular capabilities (skills) utilized by Chimera agents during task execution.
+This directory defines the modular capabilities (skills) utilized by Chimera agents during task execution. In accordance with Spec-Driven Development (SDD), these interfaces are the "Source of Truth" for agent actions.
 
-## 1. skill_fetch_trends
-- **Description**: Fetches social and news data via configured MCP resources to identify viral topics.
-- **Input Contract**: `{"topic_domain": "string", "limit": "int"}`
-- **Output Contract**: `{"trends": [{"tag": "string", "relevance": "float"}], "id": "uuid"}`
+## 1. `fetch_trends`
+- **Purpose**: Ingest multimodal trend data via MCP news/social resources.
+- **Input schema (JSON)**:
+  ```json
+  {
+    "domain": "string (e.g., 'fashion', 'tech')",
+    "geography": "string (ISO code)",
+    "limit": "integer (max 10)"
+  }
+  ```
+- **Output schema (JSON)**:
+  ```json
+  {
+    "trends": [
+      {
+        "cluster_id": "string",
+        "velocity": "float",
+        "summary": "string"
+      }
+    ],
+    "id": "uuid"
+  }
+  ```
 
-## 2. skill_generate_multimodal
-- **Description**: Orchestrates specialized generation servers (Ideogram, Luma) to produce campaign assets.
-- **Input Contract**: `{"prompt": "string", "media_type": "image|video", "persona_id": "string"}`
-- **Output Contract**: `{"asset_url": "string", "confidence_score": "float"}`
+## 2. `generate_multimodal`
+- **Purpose**: Generates visual assets (images/videos) ensuring persona facial/style locking.
+- **Input schema (JSON)**:
+  ```json
+  {
+    "prompt": "string",
+    "media_type": "enum ['image', 'video']",
+    "persona_id": "string",
+    "motion_intensity": "integer (0-10)"
+  }
+  ```
+- **Output schema (JSON)**:
+  ```json
+  {
+    "asset_url": "string (URI)",
+    "confidence_score": "float",
+    "verification_status": "enum ['approved', 'pending_review']"
+  }
+  ```
 
-## 3. skill_monitor_finance
-- **Description**: Interfaces with Coinbase AgentKit to check balances and validate budget limits.
-- **Input Contract**: `{"check_type": "balance|budget_cap"}`
-- **Output Contract**: `{"balance_usdc": "float", "is_solvent": "bool"}`
+## 3. `monitor_finance`
+- **Purpose**: Real-time solvency checks via Coinbase AgentKit. Mandatory gate for the CFO Judge.
+- **Input schema (JSON)**:
+  ```json
+  {
+    "action": "enum ['get_balance', 'validate_transaction']",
+    "target_amount_usdc": "float (optional)"
+  }
+  ```
+- **Output schema (JSON)**:
+  ```json
+  {
+    "balance_usdc": "float",
+    "allow_transaction": "boolean",
+    "reasoning": "string"
+  }
+  ```

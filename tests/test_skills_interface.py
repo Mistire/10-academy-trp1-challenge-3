@@ -15,13 +15,13 @@ def test_skills_parameter_validation():
     except ImportError:
         pytest.fail("Skills modules not implemented. TDD baseline failed.")
 
-    # 1. Test Multimodal Gen: Missing platform/prompt
+    # 1. Test Multimodal Gen: Missing persona_id
     with pytest.raises(ValueError):
-        generate_multimodal({"wrong_key": "data"})
+        generate_multimodal({"prompt": "Cyberpunk", "media_type": "image"})
 
-    # 2. Test Finance Monitor: Invalid check_type
+    # 2. Test Finance Monitor: Invalid action
     with pytest.raises(ValueError):
-        monitor_finance({"check_type": "invalid_type"})
+        monitor_finance({"action": "invalid_type"})
 
 @pytest.mark.xfail(reason="TDD Empty Slot - Implementation Pending")
 def test_multimodal_generation_contract():
@@ -33,10 +33,12 @@ def test_multimodal_generation_contract():
     sample_input = {
         "prompt": "Cyberpunk influencer in Addis Ababa",
         "media_type": "image",
-        "persona_id": "chimera-01"
+        "persona_id": "chimera-01",
+        "motion_intensity": 5
     }
     
     response = generate_multimodal(sample_input)
     assert "asset_url" in response
     assert "confidence_score" in response
+    assert "verification_status" in response
     assert 0.0 <= response["confidence_score"] <= 1.0

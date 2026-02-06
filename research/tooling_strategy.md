@@ -1,19 +1,27 @@
 # Research: Tooling Strategy for Project Chimera
 
-## 1. Developer MCP Tools (Build-Time)
-These tools facilitate the development lifecycle and environmental traceability.
+## 1. Strategic Goal: Decoupling Development vs. Runtime
+To maintain a professional agentic environment, we strictly separate **Developer Tools** (which help the human and co-pilot build the system) from **Agent Skills** (which the autonomous influencer uses at runtime).
 
-### 1.1 Git-MCP Server
-- **Purpose**: Version control orchestration and commit traceability.
-- **Workflow**: Auto-commit logs for significant architectural changes.
+## 2. Developer Tooling (Build-Time)
+These tools facilitate the Spec-Driven Development (SDD) lifecycle and environmental traceability.
 
-### 1.2 Filesystem-MCP Server
-- **Purpose**: Low-latency file editing and project structure management.
+### 2.1 GitHub Spec Kit Framework
+- **Status**: **MANDATORY**. All specifications must reside in feature-based subdirectories (e.g., `specs/001-project-chimera/`).
+- **Governance**: Every implementation must be checked via `uv run specify check` for compliance with `.specify/memory/constitution.md`.
+- **Workflow**: `specify init` -> `specify define` (Specify/Plan/Tasks) -> TDD Development.
 
-### 1.3 Tenx MCP Sense (Telemetry)
-- **Purpose**: The "Black Box" flight recorder.
-- **Requirement**: MUST be active during all ideation and development phases.
+### 2.2 Model Context Protocol (MCP) Servers
+- **Git-MCP**: Version control orchestration and commit traceability. Enables the agent to manage feature branches based on spec updates.
+- **Filesystem-MCP**: Precise, low-latency file operations. Edits must be validated against `specs/[FEATURE]/technical.md` before commitment.
+- **Tenx MCP Sense**: **ACTIVE**. Telemetry flight-recorder for auditing every "Thinking" process and tool execution.
 
-## 2. Environment Configuration
-- **Package Manager**: `uv` recommended for environment isolation.
-- **Testing**: `pytest` + `pytest-asyncio` for TDD validation.
+## 3. Runtime Skills Strategy
+- **Isolation**: Skills are stateless Python modules located in `skills/`.
+- **Interchangeability**: Standardized I/O contracts allow swapping provider implementations (e.g., OpenAI vs. Gemini) without logic breaks.
+- **Verification**: Every Skill is guarded by a corresponding test in `tests/test_skills_interface.py`.
+
+## 4. Environment Governance
+- **Package Manager**: `uv` for fast, reproducible, lockfile-locked dependency management.
+- **Spec Management**: Mandatory use of `uv run specify` for all lifecycle phases.
+- **CI/CD**: GitHub Actions run `make test` and `specify check` on every push to verify absolute spec alignment and architectural integrity.

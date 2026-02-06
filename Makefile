@@ -17,13 +17,10 @@ docker-test:
 	docker build -t chimera-governor .
 	docker run --rm chimera-governor
 
-# Placeholder for spec-check logic (optional but recommended)
+# Verify if code aligns with specs using the GitHub Spec Kit
 spec-check:
-	@echo "Comparing code items against specs/ directory..."
-	@# In a real scenario, this would trigger a script that uses LLM or static analysis
-	@# to verify if current function signatures match functional.md/technical.md
-	@ls specs/ | grep -q . || (echo "Error: specs/ directory is empty!" && exit 1)
-	@echo "Spec-check passed (Basic structure verification)."
+	@echo "Running official Spec Kit compliance check..."
+	uv run specify check
 
 # Clean up temporary build artifacts
 clean:
